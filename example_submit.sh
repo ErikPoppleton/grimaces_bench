@@ -1,11 +1,10 @@
 #!/bin/bash -l
-# Standard output and error:
+# Job stuff:
 #SBATCH -o slurm.%j.out
 #SBATCH -e slurm.%j.err
-# Initial working directory:
-# Job Name:
 #SBATCH -J test{jobid}
 #SBATCH -D {wd} #DO NOT CHANGE THIS LINE
+
 # Queue (Partition):
 #SBATCH --partition=gpu
 
@@ -13,9 +12,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks={gpus}
 #SBATCH --cpus-per-task=18
+#SBATCH --threads-per-core=1
 
-
-# Request say 32 GB of main Memory per node in Units of MB:
+# Allocated memory (in MB):
 #SBATCH --mem=32000
 
 # GPU stuff
@@ -34,4 +33,4 @@ export GMX_GPU_PME_DECOMPOSITION=1
 
 module load gromacs/2023.3
 
-srun -n {gpus} gmx_mpi mdrun -noconfout -s ../start.tpr -maxh 0.083 -pin on -bonded {bonded} -nb {nb} -pme {pme} -ntomp {ntomp} -deffnm md
+srun gmx_mpi mdrun -noconfout -s ../start.tpr -maxh 0.083 -pin on -bonded {bonded} -nb {nb} -pme {pme} -ntomp {ntomp} -deffnm md
